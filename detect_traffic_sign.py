@@ -1,0 +1,28 @@
+from ultralytics import YOLO
+import cv2
+
+# Load model
+model = YOLO("traffic_sign.pt")
+
+# Open camera (0 = webcam mặc định)
+cap = cv2.VideoCapture(0)
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    # Detect
+    results = model.predict(frame, conf=0.5)
+
+    # Vẽ bounding box và hiển thị
+    annotated_frame = results[0].plot()
+
+    cv2.imshow("YOLO Real-Time Detection", annotated_frame)
+
+    # Nhấn 'q' để thoát
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
